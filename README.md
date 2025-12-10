@@ -8,31 +8,31 @@ The Code includes
 
 # Global history perceptron predictor with PC⊕GHR Indexing to prevent aliasing
 
-I have chosen the Perceptron branch predictor as branch prediction is learning from past data and ML perceptron does a good job.
-It uses the 10bit lower index of the PC XORed with GHR to index into the table of 2^10 rows.
-Each row contains 57 weights + 1 bias weight.
-Y prediction is done by multiplying and accumulating the weights (wi) in the index with the ghr (xi) of that index.
-If Y predicted > 0 then its TAKEN else NOT TAKEN.
-Whenever i have a misprediction or the confidence is lower than the threshold i train the weights.
-Whenever we train the bias weight is incremented or decremented by 1 according to the outcome sign. If the outcome is not taken then the weight should decrease and vice versa.
-The weights is incremented or decremented by xi*outcome(sign).
-Perceptron threshold is taken as theta = 1.93 * H + 14 from the paper - Dynamic Branch Prediction with Perceptrons” Daniel A. Jiménez and Calvin Lin
+I have chosen the Perceptron branch predictor as branch prediction is learning from past data and ML perceptron does a good job.··
+It uses the 10bit lower index of the PC XORed with GHR to index into the table of 2^10 rows.··
+Each row contains 57 weights + 1 bias weight.··
+Y prediction is done by multiplying and accumulating the weights (wi) in the index with the ghr (xi) of that index.··
+If Y predicted > 0 then its TAKEN else NOT TAKEN.··
+Whenever i have a misprediction or the confidence is lower than the threshold i train the weights.··
+Whenever we train the bias weight is incremented or decremented by 1 according to the outcome sign. If the outcome is not taken then the weight should decrease and vice versa.··
+The weights is incremented or decremented by xi*outcome(sign).··
+Perceptron threshold is taken as theta = 1.93 * H + 14 from the paper - Dynamic Branch Prediction with Perceptrons” Daniel A. Jiménez and Calvin Lin··
 
 ## Structure
-The predictor maintains a table of 2^7 = 128 perceptrons, each containing:
-57 history weights (w₁…w₅₂)
-1 bias weight (w₀)
-Indexing
-index = (PC >> 2) ⊕ GHR
-Prediction
-y = w0 +  Σ ( wi * xi )   for i = 1..61
-Where 
-xi = +1 if the i-th most recent branch was TAKEN
-xi = −1 if NOT TAKEN	
-w0 is the bias weight
-wi is weight correlated with past branch i step ago,
-y >= 0 → predict TAKEN  
-y <  0 → predict NOT TAKEN
+The predictor maintains a table of 2^7 = 128 perceptrons, each containing:··
+57 history weights (w₁…w₅₂)··
+1 bias weight (w₀)··
+Indexing··
+index = (PC >> 2) ⊕ GHR··
+Prediction··
+y = w0 +  Σ ( wi * xi )   for i = 1..61··
+Where ··
+xi = +1 if the i-th most recent branch was TAKEN··
+xi = −1 if NOT TAKEN	··
+w0 is the bias weight··
+wi is weight correlated with past branch i step ago,··
+y >= 0 → predict TAKEN  ··
+y <  0 → predict NOT TAKEN··
 Training
 The perceptron is trained only when:
 The prediction is wrong 
